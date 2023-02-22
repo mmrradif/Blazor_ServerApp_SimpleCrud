@@ -1,0 +1,85 @@
+﻿@page "/ProductPages/Insert"
+
+<PageTitle>Add Product</PageTitle>
+
+@using Blazor.Database;
+@using Blazor.Get_Way
+@inject IJSRuntime js
+@inject NavigationManager Navigation
+
+<h2 class="text-center alet alert-info p-3 shadow-lg mb-4">Create a New Product</h2>
+
+@*<h4 class="alert-danger text-center p-3 visually-hidden">@message</h4>*@
+
+
+<EditForm Model="@product" OnValidSubmit="AddProduct">
+    <div class="row">
+        <div class="col-8 m-auto p-5 shadow-lg">
+
+            <DataAnnotationsValidator>
+
+            </DataAnnotationsValidator>
+            <ValidationSummary>
+
+            </ValidationSummary>
+
+
+            <div class="row mb-2">
+                <label class="col-form-label-sm">Name</label>
+                <InputText @bind-Value="@product.Name" class="form-control"></InputText>
+
+                <ValidationMessage For="@(()=>product.Name)"></ValidationMessage>
+            </div>
+
+            <div class="row mb-4">
+                <label class="col-form-label-sm">Type</label>
+                <InputText @bind-Value="@product.Type" class="form-control"></InputText>
+
+                <ValidationMessage For="@(()=>product.Type)"></ValidationMessage>
+            </div>
+
+            <div class="row">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+
+        </div>
+    </div>
+</EditForm>
+
+
+
+@code {
+
+    //string message = "";
+
+    Product product = new Product();
+
+    ProductGetWay getWay = new ProductGetWay();
+
+
+
+
+    public void AddProduct()
+    {  
+        try
+        {
+            bool isSaved = getWay.Insert(product);
+
+            if (isSaved)
+            {
+                product = new Product();
+                Navigation.NavigateTo("/ProductPages/GetAllProducts");                                
+            } 
+
+            //else
+            //{
+            //    message = "Data Inserted Failed";
+            //}
+        }
+        catch (Exception)
+        {           
+            throw;
+        }
+    }
+
+}

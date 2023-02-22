@@ -1,0 +1,103 @@
+﻿@page "/ProductPages/Edit/{id:int}"
+
+<PageTitle>Edit Product</PageTitle>
+
+@using Blazor.Database;
+@using Blazor.Get_Way
+@inject IJSRuntime js
+@inject IJSRuntime js
+@inject NavigationManager Navigation
+
+
+<h2 class="text-center alet alert-info p-3 shadow-lg mb-4">Edit Product</h2>
+
+
+@*<EditForm Model="@product" OnValidSubmit="EditProduct">
+    <div class="row">
+        <div class="col-8 m-auto">
+
+            <DataAnnotationsValidator>
+
+            </DataAnnotationsValidator>
+            <ValidationSummary>
+
+            </ValidationSummary>
+
+
+            <div class="row mb-2">
+                <label class="col-form-label-sm">Name</label>
+                <InputText @bind-Value="@product.Name" class="form-control"></InputText>
+
+                <ValidationMessage For="@(()=>product.Name)"></ValidationMessage>
+            </div>
+
+            <div class="row mb-4">
+                <label class="col-form-label-sm">Type</label>
+                <InputText @bind-Value="@product.Type" class="form-control"></InputText>
+
+                <ValidationMessage For="@(()=>product.Type)"></ValidationMessage>
+            </div>
+
+            <div class="row">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+
+        </div>
+    </div>
+</EditForm>*@
+
+
+
+
+<ProductForm product="@product" ButtonText="Update" OnValidSubmit="@EditProduct">
+
+</ProductForm>
+
+
+
+@code {
+
+    // -------------- Insert
+
+
+    Product product = new Product();
+
+    ProductGetWay getWay = new ProductGetWay();
+
+
+
+    public async Task EditProduct()
+    {
+
+        bool isConfirmed = await js.InvokeAsync<bool>("confirm", "Are You Sure Update this Product?");
+
+        if (isConfirmed)
+        {
+            bool isUpdated = getWay.Update(product);
+            if (isUpdated)
+            {
+                product = new Product();
+
+                Navigation.NavigateTo("/ProductPages/GetAllProducts");
+            }
+        }
+       
+    }
+
+
+
+    // ------------- Edit
+
+    [Parameter]
+    public int id { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        product = getWay.GetById(id);
+    }
+
+
+
+
+}

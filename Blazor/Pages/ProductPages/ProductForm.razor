@@ -1,0 +1,49 @@
+﻿@using Blazor.Database;
+
+<EditForm Model="@product" OnValidSubmit="@OnValidSubmit">
+    <div class="row">
+        <div class="col-8 m-auto m-auto p-5 shadow-lg">
+
+            <DataAnnotationsValidator>
+
+            </DataAnnotationsValidator>
+            <ValidationSummary>
+
+            </ValidationSummary>
+
+
+            <div class="row mb-2">
+                <label class="col-form-label-sm">Name</label>
+                <InputText @bind-Value="@product.Name" class="form-control"></InputText>
+
+                <ValidationMessage For="@(()=>product.Name)"></ValidationMessage>
+            </div>
+
+            <div class="row mb-4">
+                <label class="col-form-label-sm">Type</label>
+                <InputText @bind-Value="@product.Type" class="form-control"></InputText>
+
+                <ValidationMessage For="@(()=>product.Type)"></ValidationMessage>
+            </div>
+
+            <div class="row">
+                <button type="submit" class="btn btn-primary">@ButtonText</button>
+            </div>
+
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public Product product { get; set; } = default!;
+
+
+    [Parameter]
+    public string ButtonText { get; set; } = default!;
+
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+}

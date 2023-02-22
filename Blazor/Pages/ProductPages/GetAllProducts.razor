@@ -1,0 +1,80 @@
+﻿@page "/ProductPages/GetAllProducts"
+
+<PageTitle>Product List</PageTitle>
+
+@using Blazor.Database
+@using Blazor.Get_Way;
+@inject IJSRuntime js
+
+
+
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-10 m-auto">
+            <a href="ProductPages/Insert" class="btn btn-primary mb-3 shadow-lg">Add New</a>
+
+            <table class="table table-bordered table-hover">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th width="180px" class="text-center">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in products)
+                    {
+                        <tr>
+                            <td>@product.Name</td>
+                            <td>@product.Type</td>
+                            <td>
+                                <a href="ProductPages/Edit/@product.Id" class="btn btn-outline-success shadow">Edit</a>
+                                <a @onclick="(()=>Delete(product.Id))" class="btn btn-outline-danger shadow">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    List<Product> products = new List<Product>();
+
+    ProductGetWay getWay = new ProductGetWay();
+
+
+    // ---------------- Get ALL
+
+    protected override void OnInitialized()
+    {
+        products = getWay.GetAllProducts();
+    }
+
+
+
+
+    // ----------------- Delete
+
+    public async Task Delete(int id)
+    {
+        bool isConfirmed = await js.InvokeAsync<bool>("confirm", "Do you want to Delete this Product?");
+
+        if (isConfirmed)
+        {
+            bool isDeleted = getWay.Delete(id);
+            OnInitialized();
+        }
+      
+    }
+    
+}
